@@ -5,6 +5,7 @@ import bear from "./assets/bear.png"
 function App() {
   const [noButtonPosition, setNoButtonPosition] = useState({ left: "50%", top: "70%" });
   const [showYay, setShowYay] = useState(false);
+   const [bearTransform, setBearTransform] = useState('');
 
   const handleYesClick = () => {
     setShowYay(true);
@@ -27,6 +28,29 @@ function App() {
     button.style.transform = 'none';
   };
 
+   const handleBearMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+   
+    const rotateX = ((y - centerY) / centerY) * -15;
+    const rotateY = ((x - centerX) / centerX) * 15;
+    
+    
+    const translateZ = Math.abs(rotateX) + Math.abs(rotateY);
+    
+    setBearTransform(`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(${translateZ}px) scale(1.05)`);
+  };
+
+  const handleBearMouseLeave = () => {
+    setBearTransform('perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px) scale(1)');
+  };
+
   return (
     <div className="w-full h-screen bg-night relative overflow-hidden flex justify-center items-center">
       
@@ -36,7 +60,17 @@ function App() {
         <div className="text-center -mt-2 text-3xl sm:text-4xl font-semibold">
           WOULD YOU LIKE <br /> TO GO ON A DATE <br /> WITH ME ??
         </div>
-        <img src={bear} className="absolute sm:mt-35 sm:ml-8 mt-30 ml-17 sm:w-60 sm:h-60 md:w-80 md:h-80 w-44 h-44 object-cover z-0" />
+        <img 
+          src={bear} 
+          className="absolute sm:mt-35 sm:ml-8 mt-30 ml-17 sm:w-60 sm:h-60 md:w-80 md:h-80 w-44 h-44 object-cover z-0 cursor-pointer transition-all duration-200 ease-out"
+          style={{ 
+            transform: bearTransform,
+            transformStyle: 'preserve-3d',
+            filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.3))'
+          }}
+          onMouseMove={handleBearMouseMove}
+          onMouseLeave={handleBearMouseLeave}
+        />
 
 
         <div className="flex justify-center gap-3 sm:gap-6">
